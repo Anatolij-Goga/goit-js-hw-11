@@ -34,23 +34,22 @@ async function onSearchForm(event) {
     return;
   }
 
-  await fetchPictures(query, page, perPage);
   try {
-    ({ data }) => {
-      if (data.totalHits === 0) {
-        alertNoImagesFound();
-      } else {
-        renderQuery(data.hits);
+    const data = await fetchPictures(query, page, perPage);
 
-        simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+    if (data.totalHits === 0) {
+      alertNoImagesFound();
+    } else {
+      renderQuery(data.hits);
 
-        alertImagesFound(data);
+      simpleLightBox = new SimpleLightbox('.gallery a').refresh();
 
-        if (data.totalHits > perPage) {
-          loadMoreButton.classList.remove('is-hidden');
-        }
+      alertImagesFound(data);
+
+      if (data.totalHits > perPage) {
+        loadMoreButton.classList.remove('is-hidden');
       }
-    };
+    }
   } catch (error) {
     console.log(error);
   } finally {
@@ -64,19 +63,18 @@ async function onLoadMoreButton() {
   page += 1;
   simpleLightBox.destroy();
 
-  await fetchPictures(query, page, perPage);
   try {
-    ({ data }) => {
-      renderQuery(data.hits);
-      simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+    const data = await fetchPictures(query, page, perPage);
 
-      const totalPages = Math.ceil(data.totalHits / perPage);
+    renderQuery(data.hits);
+    simpleLightBox = new SimpleLightbox('.gallery a').refresh();
 
-      if (page > totalPages) {
-        loadMoreButton.classList.add('is-hidden');
-        alertEndOfSearch();
-      }
-    };
+    const totalPages = Math.ceil(data.totalHits / perPage);
+
+    if (page > totalPages) {
+      loadMoreButton.classList.add('is-hidden');
+      alertEndOfSearch();
+    }
   } catch (error) {
     console.log(error);
   }
