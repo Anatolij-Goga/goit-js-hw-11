@@ -1,7 +1,7 @@
 import './sass/main.scss';
 import { fetchPictures } from './js/fetch-pictures';
 import { renderQuery } from './js/render-query';
-import { onScroll, onToTopBtn } from './js/scroll';
+import { onScroll, onToTopButton } from './js/scroll';
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 
@@ -16,12 +16,12 @@ let simpleLightBox;
 const perPage = 40;
 
 searchForm.addEventListener('submit', onSearchForm);
-loadMoreButton.addEventListener('click', onLoadMoreBtn);
+loadMoreButton.addEventListener('click', onLoadMoreButton);
 
 onScroll();
-onToTopBtn();
+onToTopButton();
 
-function onSearchForm(event) {
+async function onSearchForm(event) {
   event.preventDefault();
   window.scrollTo({ top: 0 });
   page = 1;
@@ -34,43 +34,52 @@ function onSearchForm(event) {
     return;
   }
 
-  fetchPictures(query, page, perPage)
-    .then(({ data }) => {
+  await fetchPictures(query, page, perPage);
+  try {
+    ({ data }) => {
       if (data.totalHits === 0) {
         alertNoImagesFound();
       } else {
         renderQuery(data.hits);
+
         simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+
         alertImagesFound(data);
 
         if (data.totalHits > perPage) {
           loadMoreButton.classList.remove('is-hidden');
         }
       }
-    })
-    .catch(error => console.log(error))
-    .finally(() => {
+    };
+  } catch (error) {
+    console.log(error);
+  } finally {
+    () => {
       searchForm.reset();
-    });
+    };
+  }
 }
 
-function onLoadMoreBtn() {
+async function onLoadMoreButton() {
   page += 1;
   simpleLightBox.destroy();
 
-  fetchPictures(query, page, perPage)
-    .then(({ data }) => {
+  await fetchPictures(query, page, perPage);
+  try {
+    ({ data }) => {
       renderQuery(data.hits);
       simpleLightBox = new SimpleLightbox('.gallery a').refresh();
 
       const totalPages = Math.ceil(data.totalHits / perPage);
 
       if (page > totalPages) {
-        loadMoreBtn.classList.add('is-hidden');
+        loadMoreButton.classList.add('is-hidden');
         alertEndOfSearch();
       }
-    })
-    .catch(error => console.log(error));
+    };
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function alertImagesFound(data) {

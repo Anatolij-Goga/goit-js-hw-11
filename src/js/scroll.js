@@ -1,9 +1,9 @@
-export { onScroll, onToTopBtn };
+export { onScroll, onToTopButton };
 
 const toTopBtn = document.querySelector('.btn-to-top');
 
 window.addEventListener('scroll', onScroll);
-toTopBtn.addEventListener('click', onToTopBtn);
+toTopBtn.addEventListener('click', onToTopButton);
 
 function onScroll() {
   const scrolled = window.pageYOffset;
@@ -17,7 +17,7 @@ function onScroll() {
   }
 }
 
-function onToTopBtn() {
+function onToTopButton() {
   if (window.pageYOffset > 0) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
