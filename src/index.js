@@ -61,7 +61,7 @@ async function onSearchForm(event) {
 
 async function onLoadMoreButton() {
   page += 1;
-  // simpleLightBox.destroy();
+  simpleLightBox.destroy();
 
   try {
     const data = await fetchPictures(query, page, perPage);
