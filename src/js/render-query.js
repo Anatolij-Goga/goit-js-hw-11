@@ -3,6 +3,7 @@ export { renderQuery };
 const gallery = document.querySelector('.gallery');
 
 function renderQuery(images) {
+  console.log(images);
   const markup = images
     .map(image => {
       const {
